@@ -1348,30 +1348,30 @@ export default {
     })
 
     //code to add highlight feature for map image layer
-    esri.mapView.popup.watch('selectedFeature', function (gra) {
-      if (gra) {
-        esri.mapView.graphics.removeAll()
-        var h = esri.mapView.highlightOptions
-        gra.symbol = {
-          type: 'simple-fill', // autocasts as new SimpleFillSymbol()
-          color: [h.color.r, h.color.g, h.color.b, 0],
-          outline: {
-            // autocasts as new SimpleLineSymbol()
-            color: [h.color.r, h.color.g, h.color.b, h.color.a],
-            width: 0
-          }
-        }
-        esri.mapView.graphics.add(gra)
-      } else {
-        esri.mapView.graphics.removeAll()
-      }
-    })
+    // esri.mapView.popup.watch('selectedFeature', function (gra) {
+    //   if (gra) {
+    //     esri.mapView.graphics.removeAll()
+    //     var h = esri.mapView.highlightOptions
+    //     gra.symbol = {
+    //       type: 'simple-fill', // autocasts as new SimpleFillSymbol()
+    //       color: [h.color.r, h.color.g, h.color.b, 0],
+    //       outline: {
+    //         // autocasts as new SimpleLineSymbol()
+    //         color: [h.color.r, h.color.g, h.color.b, h.color.a],
+    //         width: 0
+    //       }
+    //     }
+    //     esri.mapView.graphics.add(gra)
+    //   } else {
+    //     esri.mapView.graphics.removeAll()
+    //   }
+    // })
 
-    esri.mapView.popup.watch('visible', function (vis) {
-      if (!vis) {
-        esri.mapView.graphics.removeAll()
-      }
-    })
+    // esri.mapView.popup.watch('visible', function (vis) {
+    //   if (!vis) {
+    //     esri.mapView.graphics.removeAll()
+    //   }
+    // })
 
     //add supporting layers widget to map if true
     if (this.$store.state.config.supportingLayersOnMap) {
