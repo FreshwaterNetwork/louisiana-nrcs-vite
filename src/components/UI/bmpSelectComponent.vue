@@ -18,9 +18,7 @@
         :clickable="scope.opt.type == 'title' ? false : true"
       >
         <q-item-section>
-          <q-item-label :style="scope.opt.color">{{
-            scope.opt.label
-          }}</q-item-label>
+          <q-item-label :style="scope.opt.color">{{ scope.opt.label }}</q-item-label>
         </q-item-section>
       </q-item>
     </template>
@@ -40,7 +38,7 @@
   </div>
 </template>
 <script>
-import bmpFullComponent from '../UI/bmpFullComponent.vue';
+import bmpFullComponent from '../UI/bmpFullComponent.vue'
 
 export default {
   data() {
@@ -59,7 +57,7 @@ export default {
           sp_factor: 0,
           area_percent: 0,
           style: '',
-          color: 'color: black; font-weight: bold;',
+          color: 'color: black; font-weight: bold;'
         },
         {
           label: 'Land Retirement',
@@ -78,7 +76,7 @@ export default {
           appType: 'EX',
           style: '',
           toggled: true,
-          color: 'color: blue; margin-left: 20px',
+          color: 'color: blue; margin-left: 20px'
         },
         {
           label: 'Pasture and Hayland Planting (Forage Planting)',
@@ -97,7 +95,7 @@ export default {
           appType: 'EX',
           style: '',
           toggled: true,
-          color: 'color: blue; margin-left: 20px',
+          color: 'color: blue; margin-left: 20px'
         },
         {
           label: 'Load Source Change BMPs (Defined Area)',
@@ -110,7 +108,7 @@ export default {
           cm_factor: 0,
           sp_factor: 0,
           area_percent: 0,
-          color: 'color: black; font-weight: bold;',
+          color: 'color: black; font-weight: bold;'
         },
         {
           label: 'Buffer - Forest (100 ft wide)',
@@ -128,7 +126,7 @@ export default {
           appType: 'EX',
           style: '',
           toggled: true,
-          color: 'color: blue; margin-left: 20px',
+          color: 'color: blue; margin-left: 20px'
         },
         {
           label: 'Buffer - Grass (35 ft wide)',
@@ -146,7 +144,7 @@ export default {
           appType: 'EX',
           style: '',
           toggled: true,
-          color: 'color: blue; margin-left: 20px',
+          color: 'color: blue; margin-left: 20px'
         },
         {
           label: '30m Buffer with Optional Grazing',
@@ -164,7 +162,7 @@ export default {
           appType: 'EX',
           style: '',
           toggled: true,
-          color: 'color: blue; margin-left: 20px',
+          color: 'color: blue; margin-left: 20px'
         },
         {
           label: 'Critical Area Planting',
@@ -182,7 +180,7 @@ export default {
           appType: 'EX',
           style: '',
           toggled: true,
-          color: 'color: blue; margin-left: 20px',
+          color: 'color: blue; margin-left: 20px'
         },
         {
           label: 'Forest Buffer (min. 35 ft wide)',
@@ -200,7 +198,7 @@ export default {
           appType: 'EX',
           style: '',
           toggled: true,
-          color: 'color: blue; margin-left: 20px',
+          color: 'color: blue; margin-left: 20px'
         },
         {
           label: 'Grass Buffer (min. 35 ft wide)',
@@ -218,7 +216,7 @@ export default {
           appType: 'EX',
           style: '',
           toggled: true,
-          color: 'color: blue; margin-left: 20px',
+          color: 'color: blue; margin-left: 20px'
         },
         {
           label: 'Wetland Restoration',
@@ -236,7 +234,7 @@ export default {
           appType: 'EX',
           style: '',
           toggled: true,
-          color: 'color: blue; margin-left: 20px',
+          color: 'color: blue; margin-left: 20px'
         },
         {
           label: 'Exclusive BMPs',
@@ -251,7 +249,7 @@ export default {
           area_percent: 0,
           style: '',
           toggled: true,
-          color: 'color: black; font-weight: bold;',
+          color: 'color: black; font-weight: bold;'
         },
         {
           label: 'Conservation Tillage 1 (30%-59% Residue)',
@@ -269,7 +267,7 @@ export default {
           appType: 'EX',
           style: '',
           toggled: true,
-          color: 'color: blue; margin-left: 20px',
+          color: 'color: blue; margin-left: 20px'
         },
         {
           label: 'Conservation TIllage 2 (>= 60% Residue)',
@@ -287,7 +285,7 @@ export default {
           area_percent: 0,
           style: '',
           toggled: true,
-          color: 'color: blue; margin-left: 20px',
+          color: 'color: blue; margin-left: 20px'
         },
         {
           label: 'Contour Farming',
@@ -305,7 +303,7 @@ export default {
           appType: 'EX',
           style: '',
           toggled: true,
-          color: 'color: blue; margin-left: 20px',
+          color: 'color: blue; margin-left: 20px'
         },
         {
           label: 'Terrace',
@@ -323,7 +321,7 @@ export default {
           appType: 'EX',
           style: '',
           toggled: true,
-          color: 'color: blue; margin-left: 20px',
+          color: 'color: blue; margin-left: 20px'
         },
         {
           label: 'Overlapping BMPs',
@@ -337,7 +335,7 @@ export default {
           sp_factor: 0,
           area_percent: 0,
           style: '',
-          color: 'color: black; font-weight: bold;',
+          color: 'color: black; font-weight: bold;'
         },
         {
           label: 'Bioreactor',
@@ -355,7 +353,7 @@ export default {
           appType: 'OV',
           style: '',
           toggled: true,
-          color: 'color: blue; margin-left: 20px',
+          color: 'color: blue; margin-left: 20px'
         },
         {
           label: 'Controlled Drainage',
@@ -373,14 +371,12 @@ export default {
           appType: 'OV',
           style: '',
           toggled: true,
-          color: 'color: blue; margin-left: 20px',
+          color: 'color: blue; margin-left: 20px'
         },
         {
-          label:
-            'Cover Crop 1 (Group A Commodity) (High Till only for Sediment)',
+          label: 'Cover Crop 1 (Group A Commodity) (High Till only for Sediment)',
           type: 'overlapping',
-          value:
-            'Cover Crop 1 (Group A Commodity) (High Till only for Sediment)',
+          value: 'Cover Crop 1 (Group A Commodity) (High Till only for Sediment)',
           nit: 0.008,
           phos: 0,
           sed: 0,
@@ -393,7 +389,7 @@ export default {
           appType: 'OV',
           style: '',
           toggled: true,
-          color: 'color: blue; margin-left: 20px',
+          color: 'color: blue; margin-left: 20px'
         },
         {
           label:
@@ -413,7 +409,7 @@ export default {
           appType: 'OV',
           style: '',
           toggled: true,
-          color: 'color: blue; margin-left: 20px',
+          color: 'color: blue; margin-left: 20px'
         },
         {
           label:
@@ -433,7 +429,7 @@ export default {
           appType: 'OV',
           style: '',
           toggled: true,
-          color: 'color: blue; margin-left: 20px',
+          color: 'color: blue; margin-left: 20px'
         },
         {
           label: 'Nutrient Management 1 (Determined Rate)',
@@ -451,14 +447,12 @@ export default {
           appType: 'OV',
           style: '',
           toggled: true,
-          color: 'color: blue; margin-left: 20px',
+          color: 'color: blue; margin-left: 20px'
         },
         {
-          label:
-            'Nutrient Management 2 (Determined Rate Plus Additional Considerations)',
+          label: 'Nutrient Management 2 (Determined Rate Plus Additional Considerations)',
           type: 'overlapping',
-          value:
-            'Nutrient Management 2 (Determined Rate Plus Additional Considerations)',
+          value: 'Nutrient Management 2 (Determined Rate Plus Additional Considerations)',
           nit: 0.24,
           phos: 0.56,
           sed: 0,
@@ -471,7 +465,7 @@ export default {
           appType: 'OV',
           style: '',
           toggled: true,
-          color: 'color: blue; margin-left: 20px',
+          color: 'color: blue; margin-left: 20px'
         },
         {
           label: 'Two-Stage Ditch',
@@ -489,14 +483,12 @@ export default {
           appType: 'OV',
           style: '',
           toggled: true,
-          color: 'color: blue; margin-left: 20px',
+          color: 'color: blue; margin-left: 20px'
         },
         {
-          label:
-            'Grazing Land Management (Rotational Grazing with Fenced Areas)',
+          label: 'Grazing Land Management (Rotational Grazing with Fenced Areas)',
           type: 'overlapping',
-          value:
-            'Grazing Land Management (Rotational Grazing with Fenced Areas)',
+          value: 'Grazing Land Management (Rotational Grazing with Fenced Areas)',
           nit: 0.43,
           phos: 0.26,
           sed: 0,
@@ -509,7 +501,7 @@ export default {
           appType: 'OV',
           style: '',
           toggled: true,
-          color: 'color: blue; margin-left: 20px',
+          color: 'color: blue; margin-left: 20px'
         },
         {
           label: 'Heavy Use Area Protection',
@@ -527,7 +519,7 @@ export default {
           appType: 'OV',
           style: '',
           toggled: true,
-          color: 'color: blue; margin-left: 20px',
+          color: 'color: blue; margin-left: 20px'
         },
         {
           label: 'Litter Storage and Management',
@@ -545,7 +537,7 @@ export default {
           appType: 'OV',
           style: '',
           toggled: true,
-          color: 'color: blue; margin-left: 20px',
+          color: 'color: blue; margin-left: 20px'
         },
         {
           label: 'Livestock Exclusion Fencing',
@@ -563,7 +555,7 @@ export default {
           appType: 'OV',
           style: '',
           toggled: true,
-          color: 'color: blue; margin-left: 20px',
+          color: 'color: blue; margin-left: 20px'
         },
         {
           label: 'Prescribed Grazing',
@@ -581,7 +573,7 @@ export default {
           appType: 'OV',
           style: '',
           toggled: true,
-          color: 'color: blue; margin-left: 20px',
+          color: 'color: blue; margin-left: 20px'
         },
         {
           label: 'Steambank Protection w/o Fencing',
@@ -599,7 +591,7 @@ export default {
           appType: 'OV',
           style: '',
           toggled: true,
-          color: 'color: blue; margin-left: 20px',
+          color: 'color: blue; margin-left: 20px'
         },
         {
           label: 'Steambank Stabilization and Fencing',
@@ -617,7 +609,7 @@ export default {
           appType: 'OV',
           style: '',
           toggled: true,
-          color: 'color: blue; margin-left: 20px',
+          color: 'color: blue; margin-left: 20px'
         },
         {
           label: 'Use Exclusion',
@@ -635,106 +627,107 @@ export default {
           appType: 'OV',
           style: '',
           toggled: true,
-          color: 'color: blue; margin-left: 20px',
-        },
-      ],
-    };
+          color: 'color: blue; margin-left: 20px'
+        }
+      ]
+    }
   },
   computed: {
     bmpSelect: {
       get() {
-        return this.$store.state.bmpSelect;
+        return this.$store.state.bmpSelect
       },
       set(value) {
-        this.$store.commit('updateBmpSelect', value);
-      },
+        this.$store.commit('updateBmpSelect', value)
+      }
     },
     lastBmp: {
       get() {
-        return this.$store.state.lastBmp;
+        return this.$store.state.lastBmp
       },
       set(value) {
-        this.$store.commit('updateLastBmp', value);
-      },
+        this.$store.commit('updateLastBmp', value)
+      }
     },
     totalNewLoadNit: {
       get() {
-        return this.$store.state.totalNewLoadNit;
+        return this.$store.state.totalNewLoadNit
       },
       set(value) {
-        this.$store.commit('updateTotalNewLoadNit', value);
-      },
+        this.$store.commit('updateTotalNewLoadNit', value)
+      }
     },
     totalNewLoadPhos: {
       get() {
-        return this.$store.state.totalNewLoadPhos;
+        return this.$store.state.totalNewLoadPhos
       },
       set(value) {
-        this.$store.commit('updateTotalNewLoadPhos', value);
-      },
+        this.$store.commit('updateTotalNewLoadPhos', value)
+      }
     },
     totalNewLoadSed: {
       get() {
-        return this.$store.state.totalNewLoadSed;
+        return this.$store.state.totalNewLoadSed
       },
       set(value) {
-        this.$store.commit('updateTotalNewLoadSed', value);
-      },
+        this.$store.commit('updateTotalNewLoadSed', value)
+      }
     },
     totalReducedPercentNit: {
       get() {
-        return this.$store.state.totalReducedPercentNit;
+        return this.$store.state.totalReducedPercentNit
       },
       set(value) {
-        this.$store.commit('updateTotalReducedPercentNit', value);
-      },
+        this.$store.commit('updateTotalReducedPercentNit', value)
+      }
     },
     totalReducedPercentPhos: {
       get() {
-        return this.$store.state.totalReducedPercentPhos;
+        return this.$store.state.totalReducedPercentPhos
       },
       set(value) {
-        this.$store.commit('updateTotalReducedPercentPhos', value);
-      },
+        this.$store.commit('updateTotalReducedPercentPhos', value)
+      }
     },
     totalReducedPercentSed: {
       get() {
-        return this.$store.state.totalReducedPercentSed;
+        return this.$store.state.totalReducedPercentSed
       },
       set(value) {
-        this.$store.commit('updateTotalReducedPercentSed', value);
-      },
+        this.$store.commit('updateTotalReducedPercentSed', value)
+      }
     },
     printMap() {
-      return this.$store.state.printMap;
+      return this.$store.state.printMap
     },
     initLoadData() {
-      return this.$store.state.initLoadData;
+      return this.$store.state.initLoadData
     },
     reportCropTables: {
       get() {
-        return this.$store.state.reportCropTables;
+        return this.$store.state.reportCropTables
       },
       set(value) {
-        this.$store.commit('updateReportCropTables', value);
-      },
-    },
+        this.$store.commit('updateReportCropTables', value)
+      }
+    }
   },
   props: {
-    crop: { type: Object },
+    id: { type: Number },
+    crop: { type: Object }
   },
   components: { bmpFullComponent },
   methods: {
     removeBmp(array) {
-      console.log(array);
+      console.log(array)
 
-      let num = -1;
-      const val = array[0];
-      const crop = array[1];
+      let num = -1
+      const val = array[0]
+      const crop = array[1]
 
-      console.log(val);
-      console.log(crop);
-      console.log(this.bmpOptions);
+      console.log(val)
+      console.log(crop)
+      console.log(this.bmpOptions)
 
       this.bmpOptions.forEach((a) => {
         // if (val.type == 'full') {
@@ -758,88 +751,85 @@ export default {
         //   }
         // }
         if (val == a) {
-          a.disable = false;
+          a.disable = false
         }
-      });
+      })
 
       this.bmpSelect.forEach((bmp, index) => {
         if (bmp.value == val.value) {
-          num = index;
-          bmp.toggled = false;
+          num = index
+          bmp.toggled = false
         }
-        bmp.disable = false;
-      });
-      this.bmpSelect.splice(num, 1);
+        bmp.disable = false
+      })
+      this.bmpSelect.splice(num, 1)
 
-      crop.bmpLength = this.bmpSelect.length;
+      crop.bmpLength = this.bmpSelect.length
 
-      this.$store.dispatch('buildNrcsStore', [this.bmpSelect, crop]);
+      this.$store.dispatch('buildNrcsStore', [this.bmpSelect, crop])
 
-      this.toggledOff = !this.toggledOff;
+      this.toggledOff = !this.toggledOff
     },
     toggleBmp(array) {
-      const val = array[0];
-      const crop = array[1];
-      let toggledBmps = [];
+      const val = array[0]
+      const crop = array[1]
+      let toggledBmps = []
 
-      this.toggledOff = !this.toggledOff;
+      this.toggledOff = !this.toggledOff
 
       if (val.toggled == false) {
-        val.toggled = true;
+        val.toggled = true
       } else if (val.toggled == true) {
-        val.toggled = false;
+        val.toggled = false
       }
 
       this.bmpSelect.forEach((bmp) => {
         if (bmp.toggled == true) {
-          toggledBmps.push(bmp);
+          toggledBmps.push(bmp)
         }
-      });
+      })
 
-      this.$store.dispatch('buildNrcsStore', [toggledBmps, crop]);
+      this.$store.dispatch('buildNrcsStore', [toggledBmps, crop])
     },
     startBuild(val, crop) {
-      this.bmpSelect = val;
-      crop.bmpLength = this.bmpSelect.length;
+      this.bmpSelect = val
+      crop.bmpLength = this.bmpSelect.length
 
-      console.log(this.initLoadData);
+      console.log(this.initLoadData)
 
       if (crop.bmps.includes(this.bmpSelect) == false) {
-        crop.bmps.push(this.bmpSelect);
+        crop.bmps.push(this.bmpSelect)
       }
 
-      console.log(this.bmpSelect);
-      console.log(this.initLoadData);
+      console.log(this.bmpSelect)
+      console.log(this.initLoadData)
 
-      this.$store.dispatch('buildNrcsStore', [this.bmpSelect, crop]);
-    },
+      this.$store.dispatch('buildNrcsStore', [this.bmpSelect, crop])
+    }
   },
   watch: {
     bmpSelect() {
       this.bmpOptions.forEach((a) => {
         if (this.lastBmp.label == a.label) {
-          a.disable = true;
+          a.disable = true
         }
         if (this.lastBmp.type == 'full') {
-          a.disable = true;
+          a.disable = true
         } else if (this.lastBmp.type == 'defined') {
           if (a.type == 'full' || a.type == 'defined') {
-            a.disable = true;
+            a.disable = true
           }
-        } else if (
-          this.lastBmp.type == 'exclusive' ||
-          this.lastBmp.type == 'overlapping'
-        ) {
+        } else if (this.lastBmp.type == 'exclusive' || this.lastBmp.type == 'overlapping') {
           if (a.disable == true) {
-            a.disable = true;
+            a.disable = true
           } else if (a.disable == false) {
-            a.disable == false;
+            a.disable == false
           }
         }
-      });
+      })
 
-      this.lastBmp = {};
-    },
-  },
-};
+      this.lastBmp = {}
+    }
+  }
+}
 </script>

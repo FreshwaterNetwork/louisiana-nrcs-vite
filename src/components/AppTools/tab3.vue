@@ -35,11 +35,10 @@
       <hr />
       <div v-if="this.mngmtVis === false && this.loadingVis === false">
         <p>
-          Welcome to the NRCS Conservation Delivery Application. Use this tool
-          to Calculate nutrient and sediment loads and test Best Management
-          Practice applications. Begin by selecting a scale for your analysis:
-          Resource Unit (RU), 12-digit hydrologic unit (HUC 12), catchment or
-          Agricultural field.
+          Welcome to the NRCS Conservation Delivery Application. Use this tool to Calculate nutrient
+          and sediment loads and test Best Management Practice applications. Begin by selecting a
+          scale for your analysis: Resource Unit (RU), 12-digit hydrologic unit (HUC 12), catchment
+          or Agricultural field.
         </p>
         <div>
           <p class="text-bold">Reference Layers:</p>
@@ -54,10 +53,9 @@
           </div>
         </div>
         <p>
-          Click the map to select up to <b>five</b> analysis units from your
-          selected scale. Constituent loads can only be calculated within
-          features that contain agricultural fields. Click “Select Best
-          Management Practices to calculate original loads and begin applying
+          Click the map to select up to <b>five</b> analysis units from your selected scale.
+          Constituent loads can only be calculated within features that contain agricultural fields.
+          Click “Select Best Management Practices to calculate original loads and begin applying
           BMPs.
         </p>
         <div>
@@ -116,13 +114,9 @@
     <!-- second page -->
     <div v-if="this.mngmtVis === true && this.loadingVis === false">
       <div>
-        <div style="display: flex; justify-content: space-between;">
-          <q-btn class="q-ma-sm" color="primary" @click="backButton()"
-            >Back</q-btn
-          >
-          <q-btn class="q-ma-sm" color="primary" @click="adjustMap()">
-            Build Report
-          </q-btn>
+        <div style="display: flex; justify-content: space-between">
+          <q-btn class="q-ma-sm" color="primary" @click="backButton()">Back</q-btn>
+          <q-btn class="q-ma-sm" color="primary" @click="adjustMap()"> Build Report </q-btn>
         </div>
         <div class="text-h5 text-center">
           All Load Sources -
@@ -143,21 +137,21 @@
               <td class="total-cell">
                 {{
                   this.totalNitr.toLocaleString('en-US', {
-                    maximumFractionDigits: 2,
+                    maximumFractionDigits: 2
                   })
                 }}
               </td>
               <td class="total-cell">
                 {{
                   this.totalPhos.toLocaleString('en-US', {
-                    maximumFractionDigits: 2,
+                    maximumFractionDigits: 2
                   })
                 }}
               </td>
               <td class="total-cell">
                 {{
                   this.totalSed.toLocaleString('en-US', {
-                    maximumFractionDigits: 2,
+                    maximumFractionDigits: 2
                   })
                 }}
               </td>
@@ -167,21 +161,21 @@
               <td class="total-cell">
                 {{
                   this.totalNewLoadNit.toLocaleString('en-US', {
-                    maximumFractionDigits: 2,
+                    maximumFractionDigits: 2
                   })
                 }}
               </td>
               <td class="total-cell">
                 {{
                   this.totalNewLoadPhos.toLocaleString('en-US', {
-                    maximumFractionDigits: 2,
+                    maximumFractionDigits: 2
                   })
                 }}
               </td>
               <td class="total-cell">
                 {{
                   this.totalNewLoadSed.toLocaleString('en-US', {
-                    maximumFractionDigits: 2,
+                    maximumFractionDigits: 2
                   })
                 }}
               </td>
@@ -200,9 +194,7 @@
       <!-- <div v-if="this.finalLayer === 'NRCS Resource Units'"> -->
       <div v-for="crop in this.initLoadData" :key="crop">
         <q-expansion-item
-          :label="
-            crop.label + ' ' + '-' + ' ' + crop.acres.toFixed(2) + ' ' + 'acres'
-          "
+          :label="crop.label + ' ' + '-' + ' ' + crop.acres.toFixed(2) + ' ' + 'acres'"
           v-if="this.nonCrop.includes(crop.label) == false"
           expand-separator
           switch-toggle-side
@@ -210,9 +202,7 @@
           style="border: 1px solid #ccc; border-radius: 3px"
         >
           <template v-slot:header>
-            <q-item-section>
-              {{ crop.label }} - {{ crop.acres.toFixed(2) }} acres
-            </q-item-section>
+            <q-item-section> {{ crop.label }} - {{ crop.acres.toFixed(2) }} acres </q-item-section>
             <q-item-section side>
               <q-chip
                 v-if="crop.bmpLength !== 0"
@@ -256,11 +246,7 @@
               <td class="crop-cell">{{ crop.sedReducPercent }} %</td>
             </tr>
           </table>
-
-          <bmp-select-component
-            :id="crop.bmp"
-            :crop="crop"
-          ></bmp-select-component>
+          <bmp-select-component :id="crop.bmp" :crop="crop"></bmp-select-component>
         </q-expansion-item>
       </div>
       <!-- <div style="display: flex; width: fit-content; margin: auto"> -->
@@ -278,9 +264,9 @@
 </template>
 
 <script>
-import IconButton from '../UI/IconButton.vue';
+import IconButton from '../UI/IconButton.vue'
 // import bmpFullComponent from '../UI/bmpFullComponent.vue';
-import bmpSelectComponent from '../UI/bmpSelectComponent.vue';
+import bmpSelectComponent from '../UI/bmpSelectComponent.vue'
 
 export default {
   name: 'louisiana-cda',
@@ -291,13 +277,13 @@ export default {
       scaleOptions: [
         { label: 'Agricultural Fields', value: 'Agricultural Fields' },
         { label: 'Poultry Production', value: 'Poultry Production' },
-        { label: 'Dairy Production', value: 'Dairy Production' },
+        { label: 'Dairy Production', value: 'Dairy Production' }
       ],
       layerOptions: [
         { label: 'Resource Units', value: 'NRCS Resource Units' },
         { label: 'HUC 12', value: '12-Digit Hydrologic Units' },
         { label: 'Catchments', value: 'Catchments' },
-        { label: 'Agricultural Fields', value: 'Field Boundaries' },
+        { label: 'Agricultural Fields', value: 'Field Boundaries' }
       ],
       reference: 'Agricultural Fields',
       finalData: [],
@@ -321,7 +307,7 @@ export default {
           sp_factor: 0,
           area_percent: 0,
           style: '',
-          color: 'color: black',
+          color: 'color: black'
         },
         {
           label: 'Land Retirement',
@@ -341,7 +327,7 @@ export default {
           style: '',
           toggled: true,
           disable: false,
-          color: 'color: blue',
+          color: 'color: blue'
         },
         {
           label: 'Pasture and Hayland Planting (Forage Planting)',
@@ -361,7 +347,7 @@ export default {
           style: '',
           toggled: true,
           disable: false,
-          color: 'color: blue',
+          color: 'color: blue'
         },
         {
           label: 'Load Source Change BMPs (Defined Area)',
@@ -375,7 +361,7 @@ export default {
           cm_factor: 0,
           sp_factor: 0,
           area_percent: 0,
-          color: 'color: black',
+          color: 'color: black'
         },
         {
           label: 'Buffer - Forest (100 ft wide)',
@@ -394,7 +380,7 @@ export default {
           style: '',
           toggled: true,
           disable: false,
-          color: 'color: blue',
+          color: 'color: blue'
         },
         {
           label: 'Buffer - Grass (35 ft wide)',
@@ -413,7 +399,7 @@ export default {
           style: '',
           toggled: true,
           disable: false,
-          color: 'color: blue',
+          color: 'color: blue'
         },
         {
           label: '30m Buffer with Optional Grazing',
@@ -432,7 +418,7 @@ export default {
           style: '',
           toggled: true,
           disable: false,
-          color: 'color: blue',
+          color: 'color: blue'
         },
         {
           label: 'Critical Area Planting',
@@ -451,7 +437,7 @@ export default {
           style: '',
           toggled: true,
           disable: false,
-          color: 'color: blue',
+          color: 'color: blue'
         },
         {
           label: 'Forest Buffer (min. 35 ft wide)',
@@ -470,7 +456,7 @@ export default {
           style: '',
           toggled: true,
           disable: false,
-          color: 'color: blue',
+          color: 'color: blue'
         },
         {
           label: 'Grass Buffer (min. 35 ft wide)',
@@ -489,7 +475,7 @@ export default {
           style: '',
           toggled: true,
           disable: false,
-          color: 'color: blue',
+          color: 'color: blue'
         },
         {
           label: 'Wetland Restoration',
@@ -508,7 +494,7 @@ export default {
           style: '',
           toggled: true,
           disable: false,
-          color: 'color: blue',
+          color: 'color: blue'
         },
         {
           label: 'Exclusive BMPs',
@@ -524,7 +510,7 @@ export default {
           area_percent: 0,
           style: '',
           toggled: true,
-          color: 'color: black',
+          color: 'color: black'
         },
         {
           label: 'Conservation Tillage 1 (30%-59% Residue)',
@@ -543,7 +529,7 @@ export default {
           style: '',
           toggled: true,
           disable: false,
-          color: 'color: blue',
+          color: 'color: blue'
         },
         {
           label: 'Conservation TIllage 2 (>= 60% Residue)',
@@ -562,7 +548,7 @@ export default {
           style: '',
           toggled: true,
           disable: false,
-          color: 'color: blue',
+          color: 'color: blue'
         },
         {
           label: 'Contour Farming',
@@ -581,7 +567,7 @@ export default {
           style: '',
           toggled: true,
           disable: false,
-          color: 'color: blue',
+          color: 'color: blue'
         },
         {
           label: 'Terrace',
@@ -600,7 +586,7 @@ export default {
           style: '',
           toggled: true,
           disable: false,
-          color: 'color: blue',
+          color: 'color: blue'
         },
         {
           label: 'Overlapping BMPs',
@@ -615,7 +601,7 @@ export default {
           sp_factor: 0,
           area_percent: 0,
           style: '',
-          color: 'color: black',
+          color: 'color: black'
         },
         {
           label: 'Bioreactor',
@@ -634,7 +620,7 @@ export default {
           style: '',
           toggled: true,
           disable: false,
-          color: 'color: blue',
+          color: 'color: blue'
         },
         {
           label: 'Controlled Drainage',
@@ -653,14 +639,12 @@ export default {
           style: '',
           toggled: true,
           disable: false,
-          color: 'color: blue',
+          color: 'color: blue'
         },
         {
-          label:
-            'Cover Crop 1 (Group A Commodity) (High Till only for Sediment)',
+          label: 'Cover Crop 1 (Group A Commodity) (High Till only for Sediment)',
           type: 'overlapping',
-          value:
-            'Cover Crop 1 (Group A Commodity) (High Till only for Sediment)',
+          value: 'Cover Crop 1 (Group A Commodity) (High Till only for Sediment)',
           nit: 0.008,
           phos: 0,
           sed: 0,
@@ -674,7 +658,7 @@ export default {
           style: '',
           toggled: true,
           disable: false,
-          color: 'color: blue',
+          color: 'color: blue'
         },
         {
           label:
@@ -695,7 +679,7 @@ export default {
           style: '',
           toggled: true,
           disable: false,
-          color: 'color: blue',
+          color: 'color: blue'
         },
         {
           label:
@@ -716,7 +700,7 @@ export default {
           style: '',
           toggled: true,
           disable: false,
-          color: 'color: blue',
+          color: 'color: blue'
         },
         {
           label: 'Nutrient Management 1 (Determined Rate)',
@@ -735,14 +719,12 @@ export default {
           style: '',
           toggled: true,
           disable: false,
-          color: 'color: blue',
+          color: 'color: blue'
         },
         {
-          label:
-            'Nutrient Management 2 (Determined Rate Plus Additional Considerations)',
+          label: 'Nutrient Management 2 (Determined Rate Plus Additional Considerations)',
           type: 'overlapping',
-          value:
-            'Nutrient Management 2 (Determined Rate Plus Additional Considerations)',
+          value: 'Nutrient Management 2 (Determined Rate Plus Additional Considerations)',
           nit: 0.24,
           phos: 0.56,
           sed: 0,
@@ -756,7 +738,7 @@ export default {
           style: '',
           toggled: true,
           disable: false,
-          color: 'color: blue',
+          color: 'color: blue'
         },
         {
           label: 'Two-Stage Ditch',
@@ -775,14 +757,12 @@ export default {
           style: '',
           toggled: true,
           disable: false,
-          color: 'color: blue',
+          color: 'color: blue'
         },
         {
-          label:
-            'Grazing Land Management (Rotational Grazing with Fenced Areas)',
+          label: 'Grazing Land Management (Rotational Grazing with Fenced Areas)',
           type: 'overlapping',
-          value:
-            'Grazing Land Management (Rotational Grazing with Fenced Areas)',
+          value: 'Grazing Land Management (Rotational Grazing with Fenced Areas)',
           nit: 0.43,
           phos: 0.26,
           sed: 0,
@@ -796,7 +776,7 @@ export default {
           style: '',
           toggled: true,
           disable: false,
-          color: 'color: blue',
+          color: 'color: blue'
         },
         {
           label: 'Heavy Use Area Protection',
@@ -815,7 +795,7 @@ export default {
           style: '',
           toggled: true,
           disable: false,
-          color: 'color: blue',
+          color: 'color: blue'
         },
         {
           label: 'Litter Storage and Management',
@@ -834,7 +814,7 @@ export default {
           style: '',
           toggled: true,
           disable: false,
-          color: 'color: blue',
+          color: 'color: blue'
         },
         {
           label: 'Livestock Exclusion Fencing',
@@ -853,7 +833,7 @@ export default {
           style: '',
           toggled: true,
           disable: false,
-          color: 'color: blue',
+          color: 'color: blue'
         },
         {
           label: 'Prescribed Grazing',
@@ -872,7 +852,7 @@ export default {
           style: '',
           toggled: true,
           disable: false,
-          color: 'color: blue',
+          color: 'color: blue'
         },
         {
           label: 'Steambank Protection w/o Fencing',
@@ -891,7 +871,7 @@ export default {
           style: '',
           toggled: true,
           disable: false,
-          color: 'color: blue',
+          color: 'color: blue'
         },
         {
           label: 'Steambank Stabilization and Fencing',
@@ -910,7 +890,7 @@ export default {
           style: '',
           toggled: true,
           disable: false,
-          color: 'color: blue',
+          color: 'color: blue'
         },
         {
           label: 'Use Exclusion',
@@ -929,8 +909,8 @@ export default {
           style: '',
           toggled: true,
           disable: false,
-          color: 'color: blue',
-        },
+          color: 'color: blue'
+        }
       ],
       cropNewLoadNit: 0,
       cropNewLoadPhos: 0,
@@ -953,7 +933,7 @@ export default {
         'Developed/Med Intensity',
         'Developed/Low Intensity',
         'Developed/High Intensity',
-        'Aquaculture',
+        'Aquaculture'
       ],
       groupedObjects: [],
       htmlCode: null,
@@ -966,520 +946,450 @@ export default {
       aa: '',
       totalsCalculated: false,
       chipModel: true,
-      chipActive: false,
-    };
+      chipActive: false
+    }
   },
   computed: {
     layerSelection: {
       get() {
-        return this.$store.state.layerSelection;
+        return this.$store.state.layerSelection
       },
       set(value) {
-        this.$store.commit('updateLayerSelection', value);
-      },
+        this.$store.commit('updateLayerSelection', value)
+      }
     },
     referenceSelection: {
       get() {
-        return this.$store.state.referenceSelection;
+        return this.$store.state.referenceSelection
       },
       set(value) {
-        this.$store.commit('updateReferenceSelection', value);
-      },
+        this.$store.commit('updateReferenceSelection', value)
+      }
     },
     unitSelection: {
       get() {
-        return this.$store.state.unitSelection;
+        return this.$store.state.unitSelection
       },
       set(value) {
-        this.$store.commit('updateUnitSelection', value);
-      },
+        this.$store.commit('updateUnitSelection', value)
+      }
     },
-    unitLength() {
-      return this.$store.state.unitLength;
+    unitLength: {
+      get() {
+        return this.$store.state.unitLength
+      },
+      set(value) {
+        this.$store.commit('updateUnitLength', value)
+      }
     },
     loadingVis: {
       get() {
-        return this.$store.state.loadingVis;
+        return this.$store.state.loadingVis
       },
       set(value) {
-        this.$store.commit('updateLoadingVis', value);
-      },
+        this.$store.commit('updateLoadingVis', value)
+      }
     },
     mngmtVis: {
       get() {
-        return this.$store.state.mngmtVis;
+        return this.$store.state.mngmtVis
       },
       set(value) {
-        this.$store.commit('updateMngmtVis', value);
-      },
+        this.$store.commit('updateMngmtVis', value)
+      }
     },
     endLoading() {
-      return this.$store.state.endLoading;
+      return this.$store.state.endLoading
     },
     resourceUnits: {
       get() {
-        return this.$store.state.resourceUnits;
+        return this.$store.state.resourceUnits
       },
       set(value) {
-        this.$store.commit('updateResourceUnits', value);
-      },
+        this.$store.commit('updateResourceUnits', value)
+      }
     },
     hucUnits: {
       get() {
-        return this.$store.state.hucUnits;
+        return this.$store.state.hucUnits
       },
       set(value) {
-        this.$store.commit('updateHucUnits', value);
-      },
+        this.$store.commit('updateHucUnits', value)
+      }
     },
     catchUnits: {
       get() {
-        return this.$store.state.catchUnits;
+        return this.$store.state.catchUnits
       },
       set(value) {
-        this.$store.commit('updateCatchUnits', value);
-      },
+        this.$store.commit('updateCatchUnits', value)
+      }
     },
     fieldUnits: {
       get() {
-        return this.$store.state.fieldUnits;
+        return this.$store.state.fieldUnits
       },
       set(value) {
-        this.$store.commit('updateFieldUnits', value);
-      },
+        this.$store.commit('updateFieldUnits', value)
+      }
     },
     dataComplete() {
-      return this.$store.state.dataComplete;
+      return this.$store.state.dataComplete
     },
     cropNames() {
-      return Object.keys(this.cropComponents);
+      return Object.keys(this.cropComponents)
     },
     totalNitr: {
       get() {
-        return this.$store.state.totalNitr;
+        return this.$store.state.totalNitr
       },
       set(value) {
-        this.$store.commit('updateTotalNitr', value);
-      },
+        this.$store.commit('updateTotalNitr', value)
+      }
     },
     totalPhos: {
       get() {
-        return this.$store.state.totalPhos;
+        return this.$store.state.totalPhos
       },
       set(value) {
-        this.$store.commit('updateTotalPhos', value);
-      },
+        this.$store.commit('updateTotalPhos', value)
+      }
     },
     totalSed: {
       get() {
-        return this.$store.state.totalSed;
+        return this.$store.state.totalSed
       },
       set(value) {
-        this.$store.commit('updateTotalSed', value);
-      },
+        this.$store.commit('updateTotalSed', value)
+      }
     },
     totalCropArea: {
       get() {
-        return this.$store.state.totalCropArea;
+        return this.$store.state.totalCropArea
       },
       set(value) {
-        this.$store.commit('updateTotalCropArea', value);
-      },
+        this.$store.commit('updateTotalCropArea', value)
+      }
     },
     startReport: {
       get() {
-        return this.$store.state.startReport;
+        return this.$store.state.startReport
       },
       set(value) {
-        this.$store.commit('updateStartReport', value);
-      },
+        this.$store.commit('updateStartReport', value)
+      }
     },
     backBtn: {
       get() {
-        return this.$store.state.backBtn;
+        return this.$store.state.backBtn
       },
       set(value) {
-        this.$store.commit('updateBackBtn', value);
-      },
-    },
-    count: {
-      get() {
-        return this.$store.state.count;
-      },
-      set(value) {
-        this.$store.commit('updateCount', value);
-      },
+        this.$store.commit('updateBackBtn', value)
+      }
     },
     unitIndex: {
       get() {
-        return this.$store.state.unitIndex;
+        return this.$store.state.unitIndex
       },
       set(value) {
-        this.$store.commit('updateUnitIndex', value);
-      },
+        this.$store.commit('updateUnitIndex', value)
+      }
     },
     toggledOff: {
       get() {
-        return this.$store.state.toggledOff;
+        return this.$store.state.toggledOff
       },
       set(value) {
-        this.$store.commit('updateToggledOff', value);
-      },
+        this.$store.commit('updateToggledOff', value)
+      }
     },
     reportTotalTable: {
       get() {
-        return this.$store.state.reportTotalTable;
+        return this.$store.state.reportTotalTable
       },
       set(value) {
-        this.$store.commit('updateReportTotalTable', value);
-      },
+        this.$store.commit('updateReportTotalTable', value)
+      }
     },
     reportCropTables: {
       get() {
-        return this.$store.state.reportCropTables;
+        return this.$store.state.reportCropTables
       },
       set(value) {
-        this.$store.commit('updateReportCropTables', value);
-      },
+        this.$store.commit('updateReportCropTables', value)
+      }
     },
     totalNewLoadNit: {
       get() {
-        return this.$store.state.totalNewLoadNit;
+        return this.$store.state.totalNewLoadNit
       },
       set(value) {
-        this.$store.commit('updateTotalNewLoadNit', value);
-      },
+        this.$store.commit('updateTotalNewLoadNit', value)
+      }
     },
     totalNewLoadPhos: {
       get() {
-        return this.$store.state.totalNewLoadPhos;
+        return this.$store.state.totalNewLoadPhos
       },
       set(value) {
-        this.$store.commit('updateTotalNewLoadPhos', value);
-      },
+        this.$store.commit('updateTotalNewLoadPhos', value)
+      }
     },
     totalNewLoadSed: {
       get() {
-        return this.$store.state.totalNewLoadSed;
+        return this.$store.state.totalNewLoadSed
       },
       set(value) {
-        this.$store.commit('updateTotalNewLoadSed', value);
-      },
+        this.$store.commit('updateTotalNewLoadSed', value)
+      }
     },
     totalReducedPercentNit: {
       get() {
-        return this.$store.state.totalReducedPercentNit;
+        return this.$store.state.totalReducedPercentNit
       },
       set(value) {
-        this.$store.commit('updateTotalReducedPercentNit', value);
-      },
+        this.$store.commit('updateTotalReducedPercentNit', value)
+      }
     },
     totalReducedPercentPhos: {
       get() {
-        return this.$store.state.totalReducedPercentPhos;
+        return this.$store.state.totalReducedPercentPhos
       },
       set(value) {
-        this.$store.commit('updateTotalReducedPercentPhos', value);
-      },
+        this.$store.commit('updateTotalReducedPercentPhos', value)
+      }
     },
     totalReducedPercentSed: {
       get() {
-        return this.$store.state.totalReducedPercentSed;
+        return this.$store.state.totalReducedPercentSed
       },
       set(value) {
-        this.$store.commit('updateTotalReducedPercentSed', value);
-      },
+        this.$store.commit('updateTotalReducedPercentSed', value)
+      }
     },
     printMap: {
       get() {
-        return this.$store.state.printMap;
+        return this.$store.state.printMap
       },
       set(value) {
-        this.$store.commit('updatePrintMap', value);
-      },
+        this.$store.commit('updatePrintMap', value)
+      }
     },
     initLoadData: {
       get() {
-        return this.$store.state.initLoadData;
+        return this.$store.state.initLoadData
       },
       set(value) {
-        this.$store.commit('updateInitLoadData', value);
-      },
+        this.$store.commit('updateInitLoadData', value)
+      }
     },
     areaChanged: {
       get() {
-        return this.$store.state.areaChanged;
+        return this.$store.state.areaChanged
       },
       set(value) {
-        this.$store.commit('updateAreaChanged', value);
-      },
+        this.$store.commit('updateAreaChanged', value)
+      }
     },
     bmpAltered: {
       get() {
-        return this.$store.state.bmpAltered;
+        return this.$store.state.bmpAltered
       },
       set(value) {
-        this.$store.commit('updateBmpAltered', value);
-      },
+        this.$store.commit('updateBmpAltered', value)
+      }
     },
     areaApplied: {
       get() {
-        return this.$store.state.areaApplied;
+        return this.$store.state.areaApplied
       },
       set(value) {
-        this.$store.commit('updateAreaApplied', value);
-      },
+        this.$store.commit('updateAreaApplied', value)
+      }
     },
     lastBMP: {
       get() {
-        return this.$store.state.setBuildNrcsStore.lastBMP;
+        return this.$store.state.setBuildNrcsStore.lastBMP
       },
       set(value) {
-        this.$store.commit('updateLastBMP', value);
-      },
+        this.$store.commit('updateLastBMP', value)
+      }
     },
     highlighted: {
       get() {
-        return this.$store.state.highlighted;
+        return this.$store.state.highlighted
       },
       set(value) {
-        this.$store.commit('updateHighlighted', value);
-      },
+        this.$store.commit('updateHighlighted', value)
+      }
     },
     widgetVis: {
       get() {
-        return this.$store.state.widgetVis;
+        return this.$store.state.widgetVis
       },
       set(value) {
-        this.$store.commit('updateWidgetVis', value);
-      },
+        this.$store.commit('updateWidgetVis', value)
+      }
     },
     totalSelectBmps() {
-      return this.$store.state.totalSelectBmps;
+      return this.$store.state.totalSelectBmps
     },
     scale: {
       get() {
-        return this.$store.state.scale;
+        return this.$store.state.scale
       },
       set(value) {
-        this.$store.commit('updateScale', value);
-      },
+        this.$store.commit('updateScale', value)
+      }
     },
     consolidated: {
       get() {
-        return this.$store.state.consolidated;
+        return this.$store.state.consolidated
       },
       set(value) {
-        this.$store.commit('updateConsolidated', value);
-      },
-    },
+        this.$store.commit('updateConsolidated', value)
+      }
+    }
   },
   methods: {
     buildNrcs(array) {
-      this.$store.dispatch('buildNrcsStore', [array[0], array[1]]);
+      this.$store.dispatch('buildNrcsStore', [array[0], array[1]])
     },
     backButton() {
-      this.mngmtVis = false;
-      this.loadingVis = false;
-      this.count = 0;
-      this.consolidated = [];
-      this.totalCropArea = 0;
+      this.mngmtVis = false
+      this.loadingVis = false
+      this.consolidated = []
+      this.totalCropArea = 0
       // this.$store.commit('updateTotalCropArea', 0);
-      this.totalNitr = 0;
-      this.totalPhos = 0;
-      this.totalSed = 0;
-      this.initLoadData = [];
-      this.resourceUnits = [];
-      this.hucUnits = [];
-      this.catchUnits = [];
-      this.fieldUnits = [];
-      this.totalNewLoadNit = 0;
-      this.totalNewLoadPhos = 0;
-      this.totalNewLoadSed = 0;
-      this.totalReducedPercentNit = 0;
-      this.totalReducedPercentPhos = 0;
-      this.totalReducedPercentSed = 0;
+      this.totalNitr = 0
+      this.totalPhos = 0
+      this.totalSed = 0
+      this.initLoadData = []
+      this.hucUnits = []
+      this.catchUnits = []
+      this.fieldUnits = []
+      this.totalNewLoadNit = 0
+      this.totalNewLoadPhos = 0
+      this.totalNewLoadSed = 0
+      this.totalReducedPercentNit = 0
+      this.totalReducedPercentPhos = 0
+      this.totalReducedPercentSed = 0
     },
     unitRemoved(val) {
-      this.unitIndex = this.unitSelection.indexOf(val);
+      this.unitIndex = this.unitSelection.indexOf(val)
       if (this.unitIndex !== -1) {
-        this.unitSelection.splice(this.unitIndex, 1);
+        this.unitSelection.splice(this.unitIndex, 1)
       }
-      let tempHL = this.highlighted;
+      this.unitLength = this.unitSelection.length
+      let tempHL = this.highlighted
       tempHL.forEach((i, index) => {
         if (i === val[1]) {
-          tempHL.splice(index, 1);
+          tempHL.splice(index, 1)
         }
-      });
-      this.highlighted = [];
-      this.highlighted = tempHL;
+      })
+      this.highlighted = []
+      this.highlighted = tempHL
     },
     consolidateData() {
-      this.consolidated = [];
-      this.$store.commit('updateTotalCropArea', 0);
-      // console.log(this.totalCropArea);
-
+      const groupedObjects = {}
+      this.consolidated = []
+      this.$store.commit('updateTotalCropArea', 0)
+      let loopArray = []
       if (this.layerSelection === 'NRCS Resource Units') {
-        this.resourceUnits.forEach((obj) => {
-          const label = obj.label;
-          if (!this.groupedObjects[label]) {
-            this.groupedObjects[label] = {
-              label,
-              cAcres: 0,
-              nitr: 0,
-              phos: 0,
-              sed: 0,
-            };
-          }
-          this.groupedObjects[label].cAcres += obj.cAcres;
-          this.groupedObjects[label].nitr += obj.nitr;
-          this.groupedObjects[label].phos += obj.phos;
-          this.groupedObjects[label].sed += obj.sed;
-        });
-
-        // console.log(this.groupedObjects);
-
-        this.consolidated = Object.values(this.groupedObjects);
+        loopArray = Array.from(this.resourceUnits)
       } else if (this.layerSelection === '12-Digit Hydrologic Units') {
-        this.consolidated = this.hucUnits;
-        this.consolidated.forEach((obj) => {
-          const label = obj.label;
-          if (!this.groupedObjects[label]) {
-            this.groupedObjects[label] = {
-              label,
-              cAcres: 0,
-              nitr: 0,
-              phos: 0,
-              sed: 0,
-            };
-          }
-          this.groupedObjects[label].cAcres += obj.cAcres;
-          this.groupedObjects[label].nitr += obj.nitr;
-          this.groupedObjects[label].phos += obj.phos;
-          this.groupedObjects[label].sed += obj.sed;
-        });
-
-        console.log(this.groupedObjects);
-
-        this.consolidated = Object.values(this.groupedObjects);
+        loopArray = Array.from(this.hucUnits)
       } else if (this.layerSelection === 'Catchments') {
-        this.consolidated = this.catchUnits;
-        this.consolidated.forEach((obj) => {
-          const label = obj.label;
-          if (!this.groupedObjects[label]) {
-            this.groupedObjects[label] = {
-              label,
-              cAcres: 0,
-              nitr: 0,
-              phos: 0,
-              sed: 0,
-            };
-          }
-          this.groupedObjects[label].cAcres += obj.cAcres;
-          this.groupedObjects[label].nitr += obj.nitr;
-          this.groupedObjects[label].phos += obj.phos;
-          this.groupedObjects[label].sed += obj.sed;
-        });
-
-        console.log(this.groupedObjects);
-
-        this.consolidated = Object.values(this.groupedObjects);
+        loopArray = Array.from(this.catchUnits)
       } else if (this.layerSelection === 'Field Boundaries') {
-        this.consolidated = this.fieldUnits;
-        this.consolidated.forEach((obj) => {
-          const label = obj.label;
-          if (!this.groupedObjects[label]) {
-            this.groupedObjects[label] = {
-              label,
-              cAcres: 0,
-              nitr: 0,
-              phos: 0,
-              sed: 0,
-            };
-          }
-          this.groupedObjects[label].cAcres += obj.cAcres;
-          this.groupedObjects[label].nitr += obj.nitr;
-          this.groupedObjects[label].phos += obj.phos;
-          this.groupedObjects[label].sed += obj.sed;
-        });
-
-        console.log(this.groupedObjects);
-
-        this.consolidated = Object.values(this.groupedObjects);
+        loopArray = Array.from(this.fieldUnits)
       }
 
-      // let totalCAcres = this.consolidated.reduce((total, obj) => {
-      //   return total + (obj.cAcres || 0);
-      // }, 0);
+      loopArray.forEach((obj) => {
+        const label = obj.label
+        if (!groupedObjects[label]) {
+          groupedObjects[label] = {
+            label,
+            cAcres: 0,
+            nitr: 0,
+            phos: 0,
+            sed: 0
+          }
+        }
+        groupedObjects[label].cAcres += obj.cAcres
+        groupedObjects[label].nitr += obj.nitr
+        groupedObjects[label].phos += obj.phos
+        groupedObjects[label].sed += obj.sed
+      })
 
-      let tAcres = 0;
+      this.consolidated = Object.values(groupedObjects)
+
+      let tAcres = 0
 
       this.consolidated.forEach((i) => {
         if (i.nitr) {
-          this.totalNitr += parseFloat(i.nitr);
+          this.totalNitr += parseFloat(i.nitr)
         }
         if (i.phos) {
-          this.totalPhos += parseFloat(i.phos);
+          this.totalPhos += parseFloat(i.phos)
         }
         if (i.sed) {
-          this.totalSed += parseFloat(i.sed);
+          this.totalSed += parseFloat(i.sed)
         }
         if (i.cAcres) {
-          tAcres += parseInt(i.cAcres);
-
+          tAcres += parseInt(i.cAcres)
           // this.totalCropArea = this.totalCropArea.toLocaleString('en-US', {
           //   maximumFractionDigits: 0,
           // });
         }
-      });
+      })
 
-      this.totalCropArea = tAcres;
+      this.totalCropArea = tAcres
     },
     adjustMap() {
-      this.widgetVis = false;
+      this.widgetVis = false
 
-      document.getElementById('map').classList.add('report-map');
-      document.getElementById('map').style.margin = 'auto';
+      document.getElementById('map').classList.add('report-map')
+      document.getElementById('map').style.margin = 'auto'
     },
     bmpActive(val) {
-      let truth = false;
+      let truth = false
 
       val.bmps.forEach((bmp) => {
         if (bmp.toggled == true) {
-          truth == true;
+          truth == true
         }
-      });
+      })
 
-      return truth;
+      return truth
     },
     selectManagementPractices() {
-      this.loadingVis = true;
-      // this.consolidateData();
+      this.loadingVis = true
     },
     alterChips(crop) {
-      console.log(crop);
-    },
+      console.log(crop)
+    }
   },
   watch: {
     scale() {
-      this.layerSelection = this.scale;
-      this.finalLayer = this.scale;
+      this.layerSelection = this.scale
+      this.finalLayer = this.scale
     },
     reference() {
-      this.referenceSelection = this.reference;
+      this.referenceSelection = this.reference
     },
-    endLoading() {
-      if (this.endLoading == true) {
-        this.consolidateData();
-        this.loadingVis = false;
-        this.mngmtVis = true;
+    endLoading(newValue) {
+      if (newValue == true) {
+        this.consolidateData()
+        this.loadingVis = false
+        this.mngmtVis = true
       }
     },
     initLoadData() {
-      console.log(this.initLoadData);
-    },
-  },
-};
+      //console.log(this.initLoadData)
+    }
+  }
+}
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->

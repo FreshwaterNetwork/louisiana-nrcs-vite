@@ -7,7 +7,7 @@
 </template>
 
 <script>
-import SupportingLayers from '../AppTools/SupportingLayers.vue'
+//import SupportingLayers from '../AppTools/SupportingLayers.vue'
 import Map from '@arcgis/core/Map'
 import MapView from '@arcgis/core/views/MapView'
 import MapImageLayer from '@arcgis/core/layers/MapImageLayer'
@@ -32,16 +32,22 @@ let esri = {
   legend: '',
   map: '',
   measurement: '',
-  lgExpand: ''
+  lgExpand: '',
+  laySelect: 'NRCS Resource Units',
+  table1: {},
+  table2: {},
+  table3: {},
+  table4: {}
 }
 
 export default {
   name: 'TheMap',
   components: {
-    SupportingLayers
+    //SupportingLayers
   },
   data() {
     return {
+      count: 0,
       active: true,
       units: [],
       unitClick: null,
@@ -174,14 +180,6 @@ export default {
     backBtn() {
       return this.$store.state.backBtn
     },
-    count: {
-      get() {
-        return this.$store.state.count
-      },
-      set(value) {
-        this.$store.commit('updateCount', value)
-      }
-    },
     unitIndex: {
       get() {
         return this.$store.state.unitIndex
@@ -252,8 +250,6 @@ export default {
         this.getMapPrint()
       }
 
-      console.log(this.initLoadData)
-
       this.initLoadData.forEach((obj) => {
         this.totalSelectBmps.forEach((bmp) => {
           if (bmp.style === obj.label) {
@@ -288,6 +284,34 @@ export default {
           esri.highlightUnit = esri.fieldLayerView.highlight(this.highlighted)
         }
       }
+    },
+    loadingVis(newValue) {
+      if (newValue) {
+        if (esri.laySelect === 'NRCS Resource Units') {
+          this.callUnitQueries('LARU')
+        } else if (esri.laySelect === '12-Digit Hydrologic Units') {
+          this.callUnitQueries('HUC_12')
+        } else if (esri.laySelect === 'Catchments') {
+          this.callUnitQueries('Catchment_ID')
+        } else if (esri.laySelect === 'Field Boundaries') {
+          this.callUnitQueries('fid')
+        }
+      } else {
+        this.resourceUnits = []
+        this.hucUnits = []
+        this.catchUnits = []
+        this.fieldUnits = []
+      }
+    },
+    endLoading(newValue) {
+      if (newValue === true) {
+        this.consolidateInitLoads()
+      }
+    },
+    unitLength(newValue) {
+      if (newValue > 4) {
+        this.unitClick.remove()
+      }
     }
   },
 
@@ -317,7 +341,6 @@ export default {
         // let layer = esri.map.layers.items.find((layer) => {
         //   return layer.type == 'map-image' && layer.url == service.mapService;
         // });
-        // console.log(layer)
 
         l.allSublayers.items.forEach((sublayer) => {
           //see if popup template recrod exists...
@@ -474,49 +497,40 @@ export default {
     })
 
     // Tables
-    const table1 = new FeatureLayer({
+    esri.table1 = new FeatureLayer({
       url: 'https://cirrus.tnc.org/arcgis/rest/services/FN_Louisiana/CDA_feature_service_all/MapServer/7',
       outFields: ['*']
     })
 
-    const table2 = new FeatureLayer({
+    esri.table2 = new FeatureLayer({
       url: 'https://cirrus.tnc.org/arcgis/rest/services/FN_Louisiana/CDA_feature_service_all/MapServer/8',
       outFields: ['*']
     })
 
-    const table3 = new FeatureLayer({
+    esri.table3 = new FeatureLayer({
       url: 'https://cirrus.tnc.org/arcgis/rest/services/FN_Louisiana/CDA_feature_service_all/MapServer/9',
       outFields: ['*']
     })
 
-    const table4 = new FeatureLayer({
+    esri.table4 = new FeatureLayer({
       url: 'https://cirrus.tnc.org/arcgis/rest/services/FN_Louisiana/CDA_feature_service_all/MapServer/10',
       outFields: ['*']
     })
 
-    // console.log(table1, table2, table3, table4);
-
     // Reference layer selection logic
     this.$watch('referenceSelection', () => {
-      // console.log('reference layer changed');
       esri.mapImage.sublayers.forEach((sub) => {
-        // console.log(sub.id);
         if (sub.id === 4 || sub.id === 5 || sub.id === 6) {
-          // console.log(sub);
           let layerTitle = sub.title
-          // console.log(this.referenceSelection);
 
           if (this.referenceSelection === layerTitle) {
             sub.visible = true
-            // console.log(sub);
           } else if (this.referenceSelection !== layerTitle) {
             sub.visible = false
           }
         }
       })
     })
-
-    let laySelect = 'NRCS Resource Units'
 
     // Scale layer selection logic
     this.$watch('layerSelection', () => {
@@ -552,7 +566,7 @@ export default {
         catchments.visible = false
       }
 
-      laySelect = this.layerSelection
+      esri.laySelect = this.layerSelection
     })
 
     let _this = this
@@ -568,9 +582,7 @@ export default {
           y: response.mapPoint.latitude
         })
 
-        console.log(_this.loadingVis)
-
-        if (laySelect === 'NRCS Resource Units') {
+        if (esri.laySelect === 'NRCS Resource Units') {
           const queryNRCS = nrcs.createQuery(point)
           queryNRCS.geometry = point
           queryNRCS.outFields = ['*']
@@ -619,7 +631,7 @@ export default {
               // esri.map.add(highlightGraphics);
             }
           })
-        } else if (laySelect === '12-Digit Hydrologic Units') {
+        } else if (esri.laySelect === '12-Digit Hydrologic Units') {
           const queryHuc = huc.createQuery(point)
           queryHuc.geometry = point
           queryHuc.outFields = ['*']
@@ -650,7 +662,7 @@ export default {
               _this.highlighted = tempHL
             }
           })
-        } else if (laySelect === 'Catchments') {
+        } else if (esri.laySelect === 'Catchments') {
           const queryCatch = catchments.createQuery(point)
           queryCatch.geometry = point
           queryCatch.outFields = ['*']
@@ -681,7 +693,7 @@ export default {
               _this.highlighted = tempHL
             }
           })
-        } else if (laySelect === 'Field Boundaries') {
+        } else if (esri.laySelect === 'Field Boundaries') {
           const queryField = field.createQuery(point)
           queryField.geometry = point
           queryField.outFields = ['*']
@@ -715,635 +727,6 @@ export default {
         }
 
         _this.unitSelection = _this.units
-        // console.log(_this.highlighted);
-      }
-    })
-
-    function resourceUnitQuery(unit) {
-      _this.resourceUnits = []
-      // _this.count = 0;
-
-      console.log(unit)
-
-      let query1 = table1.createQuery()
-      let query2 = table2.createQuery()
-      let query3 = table3.createQuery()
-      let query4 = table4.createQuery()
-
-      query1.where = 'LARU = ' + unit[0]
-      query2.where = 'LARU = ' + unit[0]
-      query3.where = 'LARU = ' + unit[0]
-      query4.where = 'LARU = ' + unit[0]
-
-      table1.queryFeatures(query1).then(function (result) {
-        if (result) {
-          result.features.forEach((feat) => {
-            let i = {
-              label: feat.attributes.CropName,
-              cAcres: feat.attributes.CropArea_acres,
-              nitr: feat.attributes.orig_nit_load,
-              phos: feat.attributes.orig_phos_load,
-              sed: feat.attributes.orig_sed_load,
-              rFactor: feat.attributes.R_Factor_100ft_ton_in_acre_hr,
-              k_factor: feat.attributes.KffactF,
-              cls_factor: feat.attributes.Cls_factor,
-              runoff_in_yr: feat.attributes.Runoff_in_yr,
-              nit_emc_value: feat.attributes.Nitr_EMC,
-              phos_emc_value: feat.attributes.Phos_EMC,
-              c: feat.attributes.C,
-              p: feat.attributes.P,
-              newNitr: 0,
-              newPhos: 0,
-              newSed: 0,
-              nitrReducPercent: 0,
-              phosReducPercent: 0,
-              sedReducPercent: 0,
-              bmps: []
-            }
-
-            _this.resourceUnits.push(i)
-          })
-
-          _this.count = _this.count + 1
-        }
-      })
-
-      table2.queryFeatures(query2).then(function (result) {
-        if (result) {
-          result.features.forEach((feat) => {
-            let i = {
-              label: feat.attributes.CropName,
-              cAcres: feat.attributes.CropArea_acres,
-              nitr: feat.attributes.orig_nit_load,
-              phos: feat.attributes.orig_phos_load,
-              sed: feat.attributes.orig_sed_load,
-              rFactor: feat.attributes.R_Factor_100ft_ton_in_acre_hr,
-              k_factor: feat.attributes.KffactF,
-              cls_factor: feat.attributes.Cls_factor,
-              runoff_in_yr: feat.attributes.Runoff_in_yr,
-              nit_emc_value: feat.attributes.Nitr_EMC,
-              phos_emc_value: feat.attributes.Phos_EMC,
-              c: feat.attributes.C,
-              p: feat.attributes.P,
-              newNitr: 0,
-              newPhos: 0,
-              newSed: 0,
-              nitrReducPercent: 0,
-              phosReducPercent: 0,
-              sedReducPercent: 0,
-              bmps: []
-            }
-
-            _this.resourceUnits.push(i)
-          })
-
-          _this.count = _this.count + 1
-        }
-      })
-
-      table3.queryFeatures(query3).then(function (result) {
-        if (result) {
-          result.features.forEach((feat) => {
-            let i = {
-              label: feat.attributes.CropName,
-              cAcres: feat.attributes.CropArea_acres,
-              nitr: feat.attributes.orig_nit_load,
-              phos: feat.attributes.orig_phos_load,
-              sed: feat.attributes.orig_sed_load,
-              rFactor: feat.attributes.R_Factor_100ft_ton_in_acre_hr,
-              k_factor: feat.attributes.KffactF,
-              cls_factor: feat.attributes.Cls_factor,
-              runoff_in_yr: feat.attributes.Runoff_in_yr,
-              nit_emc_value: feat.attributes.Nitr_EMC,
-              phos_emc_value: feat.attributes.Phos_EMC,
-              c: feat.attributes.C,
-              p: feat.attributes.P,
-              newNitr: 0,
-              newPhos: 0,
-              newSed: 0,
-              nitrReducPercent: 0,
-              phosReducPercent: 0,
-              sedReducPercent: 0,
-              bmps: []
-            }
-
-            _this.resourceUnits.push(i)
-          })
-
-          _this.count = _this.count + 1
-        }
-      })
-
-      table4.queryFeatures(query4).then(function (result) {
-        if (result) {
-          result.features.forEach((feat) => {
-            let i = {
-              label: feat.attributes.CropName,
-              cAcres: feat.attributes.CropArea_acres,
-              nitr: feat.attributes.orig_nit_load,
-              phos: feat.attributes.orig_phos_load,
-              sed: feat.attributes.orig_sed_load,
-              rFactor: feat.attributes.R_Factor_100ft_ton_in_acre_hr,
-              k_factor: feat.attributes.KffactF,
-              cls_factor: feat.attributes.Cls_factor,
-              runoff_in_yr: feat.attributes.Runoff_in_yr,
-              nit_emc_value: feat.attributes.Nitr_EMC,
-              phos_emc_value: feat.attributes.Phos_EMC,
-              c: feat.attributes.C,
-              p: feat.attributes.P,
-              newNitr: 0,
-              newPhos: 0,
-              newSed: 0,
-              nitrReducPercent: 0,
-              phosReducPercent: 0,
-              sedReducPercent: 0,
-              bmps: []
-            }
-
-            _this.resourceUnits.push(i)
-          })
-
-          _this.count = _this.count + 1
-        }
-      })
-    }
-
-    function hucUnitQuery(unit) {
-      let query1 = table1.createQuery()
-      let query2 = table2.createQuery()
-      let query3 = table3.createQuery()
-      let query4 = table4.createQuery()
-
-      query1.where = 'HUC_12 = ' + unit[0]
-      query2.where = 'HUC_12 = ' + unit[0]
-      query3.where = 'HUC_12 = ' + unit[0]
-      query4.where = 'HUC_12 = ' + unit[0]
-
-      table1.queryFeatures(query1).then(function (result) {
-        _this.count = _this.count + 1
-        if (result) {
-          result.features.forEach((feat) => {
-            let i = {
-              label: feat.attributes.CropName,
-              cAcres: feat.attributes.CropArea_acres,
-              nitr: feat.attributes.orig_nit_load,
-              phos: feat.attributes.orig_phos_load,
-              sed: feat.attributes.orig_sed_load,
-              rFactor: feat.attributes.R_Factor_100ft_ton_in_acre_hr,
-              k_factor: feat.attributes.KffactF,
-              cls_factor: feat.attributes.Cls_factor,
-              runoff_in_yr: feat.attributes.Runoff_in_yr,
-              nit_emc_value: feat.attributes.Nitr_EMC,
-              phos_emc_value: feat.attributes.Phos_EMC,
-              c: feat.attributes.C,
-              p: feat.attributes.P,
-              newNitr: 0,
-              newPhos: 0,
-              newSed: 0,
-              nitrReducPercent: 0,
-              phosReducPercent: 0,
-              sedReducPercent: 0,
-              bmps: []
-            }
-
-            _this.hucUnits.push(i)
-          })
-          console.log(_this.hucUnits, _this.hucID)
-        }
-      })
-
-      table2.queryFeatures(query2).then(function (result) {
-        _this.count = _this.count + 1
-        if (result) {
-          result.features.forEach((feat) => {
-            let i = {
-              label: feat.attributes.CropName,
-              cAcres: feat.attributes.CropArea_acres,
-              nitr: feat.attributes.orig_nit_load,
-              phos: feat.attributes.orig_phos_load,
-              sed: feat.attributes.orig_sed_load,
-              rFactor: feat.attributes.R_Factor_100ft_ton_in_acre_hr,
-              k_factor: feat.attributes.KffactF,
-              cls_factor: feat.attributes.Cls_factor,
-              runoff_in_yr: feat.attributes.Runoff_in_yr,
-              nit_emc_value: feat.attributes.Nitr_EMC,
-              phos_emc_value: feat.attributes.Phos_EMC,
-              c: feat.attributes.C,
-              p: feat.attributes.P,
-              newNitr: 0,
-              newPhos: 0,
-              newSed: 0,
-              nitrReducPercent: 0,
-              phosReducPercent: 0,
-              sedReducPercent: 0,
-              bmps: []
-            }
-
-            _this.hucUnits.push(i)
-          })
-          console.log(_this.hucUnits, _this.hucID)
-        }
-      })
-
-      table3.queryFeatures(query3).then(function (result) {
-        _this.count = _this.count + 1
-        if (result) {
-          result.features.forEach((feat) => {
-            let i = {
-              label: feat.attributes.CropName,
-              cAcres: feat.attributes.CropArea_acres,
-              nitr: feat.attributes.orig_nit_load,
-              phos: feat.attributes.orig_phos_load,
-              sed: feat.attributes.orig_sed_load,
-              rFactor: feat.attributes.R_Factor_100ft_ton_in_acre_hr,
-              k_factor: feat.attributes.KffactF,
-              cls_factor: feat.attributes.Cls_factor,
-              runoff_in_yr: feat.attributes.Runoff_in_yr,
-              nit_emc_value: feat.attributes.Nitr_EMC,
-              phos_emc_value: feat.attributes.Phos_EMC,
-              c: feat.attributes.C,
-              p: feat.attributes.P,
-              newNitr: 0,
-              newPhos: 0,
-              newSed: 0,
-              nitrReducPercent: 0,
-              phosReducPercent: 0,
-              sedReducPercent: 0,
-              bmps: []
-            }
-
-            _this.hucUnits.push(i)
-          })
-          console.log(_this.hucUnits, _this.hucID)
-        }
-      })
-
-      table4.queryFeatures(query4).then(function (result) {
-        _this.count = _this.count + 1
-        if (result) {
-          result.features.forEach((feat) => {
-            let i = {
-              label: feat.attributes.CropName,
-              cAcres: feat.attributes.CropArea_acres,
-              nitr: feat.attributes.orig_nit_load,
-              phos: feat.attributes.orig_phos_load,
-              sed: feat.attributes.orig_sed_load,
-              rFactor: feat.attributes.R_Factor_100ft_ton_in_acre_hr,
-              k_factor: feat.attributes.KffactF,
-              cls_factor: feat.attributes.Cls_factor,
-              runoff_in_yr: feat.attributes.Runoff_in_yr,
-              nit_emc_value: feat.attributes.Nitr_EMC,
-              phos_emc_value: feat.attributes.Phos_EMC,
-              c: feat.attributes.C,
-              p: feat.attributes.P,
-              newNitr: 0,
-              newPhos: 0,
-              newSed: 0,
-              nitrReducPercent: 0,
-              phosReducPercent: 0,
-              sedReducPercent: 0,
-              bmps: []
-            }
-
-            _this.hucUnits.push(i)
-          })
-          console.log(_this.hucUnits, _this.hucID)
-        }
-      })
-    }
-
-    function catchUnitQuery(unit) {
-      let query1 = table1.createQuery()
-      let query2 = table2.createQuery()
-      let query3 = table3.createQuery()
-      let query4 = table4.createQuery()
-
-      query1.where = 'Catchment_ID = ' + unit[0]
-      query2.where = 'Catchment_ID = ' + unit[0]
-      query3.where = 'Catchment_ID = ' + unit[0]
-      query4.where = 'Catchment_ID = ' + unit[0]
-
-      table1.queryFeatures(query1).then(function (result) {
-        _this.count = _this.count + 1
-        if (result) {
-          result.features.forEach((feat) => {
-            let i = {
-              label: feat.attributes.CropName,
-              cAcres: feat.attributes.CropArea_acres,
-              nitr: feat.attributes.orig_nit_load,
-              phos: feat.attributes.orig_phos_load,
-              sed: feat.attributes.orig_sed_load,
-              rFactor: feat.attributes.R_Factor_100ft_ton_in_acre_hr,
-              k_factor: feat.attributes.KffactF,
-              cls_factor: feat.attributes.Cls_factor,
-              runoff_in_yr: feat.attributes.Runoff_in_yr,
-              nit_emc_value: feat.attributes.Nitr_EMC,
-              phos_emc_value: feat.attributes.Phos_EMC,
-              c: feat.attributes.C,
-              p: feat.attributes.P,
-              newNitr: 0,
-              newPhos: 0,
-              newSed: 0,
-              nitrReducPercent: 0,
-              phosReducPercent: 0,
-              sedReducPercent: 0,
-              bmps: []
-            }
-
-            _this.catchUnits.push(i)
-          })
-        }
-      })
-
-      table2.queryFeatures(query2).then(function (result) {
-        _this.count = _this.count + 1
-        if (result) {
-          result.features.forEach((feat) => {
-            let i = {
-              label: feat.attributes.CropName,
-              cAcres: feat.attributes.CropArea_acres,
-              nitr: feat.attributes.orig_nit_load,
-              phos: feat.attributes.orig_phos_load,
-              sed: feat.attributes.orig_sed_load,
-              rFactor: feat.attributes.R_Factor_100ft_ton_in_acre_hr,
-              k_factor: feat.attributes.KffactF,
-              cls_factor: feat.attributes.Cls_factor,
-              runoff_in_yr: feat.attributes.Runoff_in_yr,
-              nit_emc_value: feat.attributes.Nitr_EMC,
-              phos_emc_value: feat.attributes.Phos_EMC,
-              c: feat.attributes.C,
-              p: feat.attributes.P,
-              newNitr: 0,
-              newPhos: 0,
-              newSed: 0,
-              nitrReducPercent: 0,
-              phosReducPercent: 0,
-              sedReducPercent: 0,
-              bmps: []
-            }
-
-            _this.catchUnits.push(i)
-          })
-        }
-      })
-
-      table3.queryFeatures(query3).then(function (result) {
-        _this.count = _this.count + 1
-        if (result) {
-          result.features.forEach((feat) => {
-            let i = {
-              label: feat.attributes.CropName,
-              cAcres: feat.attributes.CropArea_acres,
-              nitr: feat.attributes.orig_nit_load,
-              phos: feat.attributes.orig_phos_load,
-              sed: feat.attributes.orig_sed_load,
-              rFactor: feat.attributes.R_Factor_100ft_ton_in_acre_hr,
-              k_factor: feat.attributes.KffactF,
-              cls_factor: feat.attributes.Cls_factor,
-              runoff_in_yr: feat.attributes.Runoff_in_yr,
-              nit_emc_value: feat.attributes.Nitr_EMC,
-              phos_emc_value: feat.attributes.Phos_EMC,
-              c: feat.attributes.C,
-              p: feat.attributes.P,
-              newNitr: 0,
-              newPhos: 0,
-              newSed: 0,
-              nitrReducPercent: 0,
-              phosReducPercent: 0,
-              sedReducPercent: 0,
-              bmps: []
-            }
-
-            _this.catchUnits.push(i)
-          })
-        }
-      })
-
-      table4.queryFeatures(query4).then(function (result) {
-        _this.count = _this.count + 1
-        if (result) {
-          result.features.forEach((feat) => {
-            let i = {
-              label: feat.attributes.CropName,
-              cAcres: feat.attributes.CropArea_acres,
-              nitr: feat.attributes.orig_nit_load,
-              phos: feat.attributes.orig_phos_load,
-              sed: feat.attributes.orig_sed_load,
-              rFactor: feat.attributes.R_Factor_100ft_ton_in_acre_hr,
-              k_factor: feat.attributes.KffactF,
-              cls_factor: feat.attributes.Cls_factor,
-              runoff_in_yr: feat.attributes.Runoff_in_yr,
-              nit_emc_value: feat.attributes.Nitr_EMC,
-              phos_emc_value: feat.attributes.Phos_EMC,
-              c: feat.attributes.C,
-              p: feat.attributes.P,
-              newNitr: 0,
-              newPhos: 0,
-              newSed: 0,
-              nitrReducPercent: 0,
-              phosReducPercent: 0,
-              sedReducPercent: 0,
-              bmps: []
-            }
-
-            _this.catchUnits.push(i)
-          })
-        }
-      })
-    }
-
-    function fieldUnitQuery(unit) {
-      let query1 = table1.createQuery()
-      let query2 = table2.createQuery()
-      let query3 = table3.createQuery()
-      let query4 = table4.createQuery()
-
-      query1.where = 'fid = ' + unit[0]
-      query2.where = 'fid = ' + unit[0]
-      query3.where = 'fid = ' + unit[0]
-      query4.where = 'fid = ' + unit[0]
-
-      table1.queryFeatures(query1).then(function (result) {
-        _this.count = _this.count + 1
-        if (result) {
-          result.features.forEach((feat) => {
-            let i = {
-              label: feat.attributes.CropName,
-              cAcres: feat.attributes.CropArea_acres,
-              nitr: feat.attributes.orig_nit_load,
-              phos: feat.attributes.orig_phos_load,
-              sed: feat.attributes.orig_sed_load,
-              rFactor: feat.attributes.R_Factor_100ft_ton_in_acre_hr,
-              k_factor: feat.attributes.KffactF,
-              cls_factor: feat.attributes.Cls_factor,
-              runoff_in_yr: feat.attributes.Runoff_in_yr,
-              nit_emc_value: feat.attributes.Nitr_EMC,
-              phos_emc_value: feat.attributes.Phos_EMC,
-              c: feat.attributes.C,
-              p: feat.attributes.P,
-              newNitr: 0,
-              newPhos: 0,
-              newSed: 0,
-              nitrReducPercent: 0,
-              phosReducPercent: 0,
-              sedReducPercent: 0,
-              bmps: []
-            }
-
-            _this.fieldUnits.push(i)
-          })
-        }
-      })
-
-      table2.queryFeatures(query2).then(function (result) {
-        _this.count = _this.count + 1
-        if (result) {
-          result.features.forEach((feat) => {
-            let i = {
-              label: feat.attributes.CropName,
-              cAcres: feat.attributes.CropArea_acres,
-              nitr: feat.attributes.orig_nit_load,
-              phos: feat.attributes.orig_phos_load,
-              sed: feat.attributes.orig_sed_load,
-              rFactor: feat.attributes.R_Factor_100ft_ton_in_acre_hr,
-              k_factor: feat.attributes.KffactF,
-              cls_factor: feat.attributes.Cls_factor,
-              runoff_in_yr: feat.attributes.Runoff_in_yr,
-              nit_emc_value: feat.attributes.Nitr_EMC,
-              phos_emc_value: feat.attributes.Phos_EMC,
-              c: feat.attributes.C,
-              p: feat.attributes.P,
-              newNitr: 0,
-              newPhos: 0,
-              newSed: 0,
-              nitrReducPercent: 0,
-              phosReducPercent: 0,
-              sedReducPercent: 0,
-              bmps: []
-            }
-
-            _this.fieldUnits.push(i)
-          })
-        }
-      })
-
-      table3.queryFeatures(query3).then(function (result) {
-        _this.count = _this.count + 1
-        if (result) {
-          result.features.forEach((feat) => {
-            let i = {
-              label: feat.attributes.CropName,
-              cAcres: feat.attributes.CropArea_acres,
-              nitr: feat.attributes.orig_nit_load,
-              phos: feat.attributes.orig_phos_load,
-              sed: feat.attributes.orig_sed_load,
-              rFactor: feat.attributes.R_Factor_100ft_ton_in_acre_hr,
-              k_factor: feat.attributes.KffactF,
-              cls_factor: feat.attributes.Cls_factor,
-              runoff_in_yr: feat.attributes.Runoff_in_yr,
-              nit_emc_value: feat.attributes.Nitr_EMC,
-              phos_emc_value: feat.attributes.Phos_EMC,
-              c: feat.attributes.C,
-              p: feat.attributes.P,
-              newNitr: 0,
-              newPhos: 0,
-              newSed: 0,
-              nitrReducPercent: 0,
-              phosReducPercent: 0,
-              sedReducPercent: 0,
-              bmps: []
-            }
-
-            _this.fieldUnits.push(i)
-          })
-        }
-      })
-
-      table4.queryFeatures(query4).then(function (result) {
-        _this.count = _this.count + 1
-        if (result) {
-          result.features.forEach((feat) => {
-            let i = {
-              label: feat.attributes.CropName,
-              cAcres: feat.attributes.CropArea_acres,
-              nitr: feat.attributes.orig_nit_load,
-              phos: feat.attributes.orig_phos_load,
-              sed: feat.attributes.orig_sed_load,
-              rFactor: feat.attributes.R_Factor_100ft_ton_in_acre_hr,
-              k_factor: feat.attributes.KffactF,
-              cls_factor: feat.attributes.Cls_factor,
-              runoff_in_yr: feat.attributes.Runoff_in_yr,
-              nit_emc_value: feat.attributes.Nitr_EMC,
-              phos_emc_value: feat.attributes.Phos_EMC,
-              c: feat.attributes.C,
-              p: feat.attributes.P,
-              newNitr: 0,
-              newPhos: 0,
-              newSed: 0,
-              nitrReducPercent: 0,
-              phosReducPercent: 0,
-              sedReducPercent: 0,
-              bmps: []
-            }
-
-            _this.fieldUnits.push(i)
-          })
-        }
-      })
-    }
-
-    // Query tables
-    this.$watch('loadingVis', () => {
-      if (this.loadingVis === true) {
-        // Table Queries
-        // let query1 = table1.createQuery();
-        // let query2 = table2.createQuery();
-        // let query3 = table3.createQuery();
-        // let query4 = table4.createQuery();
-
-        if (laySelect === 'NRCS Resource Units') {
-          _this.units.forEach((unit) => {
-            resourceUnitQuery(unit)
-          })
-        } else if (laySelect === '12-Digit Hydrologic Units') {
-          _this.units.forEach((unit) => {
-            hucUnitQuery(unit)
-          })
-        } else if (laySelect === 'Catchments') {
-          _this.units.forEach((unit) => {
-            catchUnitQuery(unit)
-          })
-        } else if (laySelect === 'Field Boundaries') {
-          _this.units.forEach((unit) => {
-            fieldUnitQuery(unit)
-          })
-        }
-      } else if (this.loadingVis === false) {
-        this.resourceUnits = []
-        this.hucUnits = []
-        this.catchUnits = []
-        this.fieldUnits = []
-      }
-    })
-
-    _this.$watch('unitLength', () => {
-      if (_this.unitLength > 4) {
-        this.unitClick.remove()
-      }
-    })
-
-    _this.$watch('count', () => {
-      if (_this.count === _this.units.length * 4) {
-        _this.endLoading = true
-      } else {
-        _this.endLoading = false
-      }
-    })
-
-    _this.$watch('endLoading', () => {
-      if (_this.endLoading == true) {
-        _this.consolidateInitLoads()
-        console.log(this.totalCropArea)
       }
     })
 
@@ -1462,6 +845,74 @@ export default {
   },
 
   methods: {
+    async callUnitQueries(field) {
+      this.endLoading = false
+      this.resourceUnits = []
+      this.hucUnits = []
+      for (let unit of this.units) {
+        await this.unitQueries(unit, field)
+      }
+      this.endLoading = true
+    },
+    unitQueries(unit, field) {
+      return new Promise((resolve, reject) => {
+        let count = 0
+        const tables = [esri.table1, esri.table2, esri.table3, esri.table4]
+        const queryPromises = tables.map((table) => {
+          let query = table.createQuery()
+          query.where = field + ' = ' + unit[0]
+          return table.queryFeatures(query).then((result) => {
+            if (result) {
+              result.features.forEach((feat) => {
+                let i = {
+                  label: feat.attributes.CropName,
+                  cAcres: feat.attributes.CropArea_acres,
+                  nitr: feat.attributes.orig_nit_load,
+                  phos: feat.attributes.orig_phos_load,
+                  sed: feat.attributes.orig_sed_load,
+                  rFactor: feat.attributes.R_Factor_100ft_ton_in_acre_hr,
+                  k_factor: feat.attributes.KffactF,
+                  cls_factor: feat.attributes.Cls_factor,
+                  runoff_in_yr: feat.attributes.Runoff_in_yr,
+                  nit_emc_value: feat.attributes.Nitr_EMC,
+                  phos_emc_value: feat.attributes.Phos_EMC,
+                  c: feat.attributes.C,
+                  p: feat.attributes.P,
+                  newNitr: 0,
+                  newPhos: 0,
+                  newSed: 0,
+                  nitrReducPercent: 0,
+                  phosReducPercent: 0,
+                  sedReducPercent: 0,
+                  bmps: []
+                }
+                if (field === 'LARU') {
+                  this.resourceUnits.push(i)
+                }
+                if (field === 'HUC_12') {
+                  this.hucUnits.push(i)
+                }
+                if (field === 'Catchment_ID') {
+                  this.catchUnits.push(i)
+                }
+                if (field === 'fid') {
+                  this.fieldUnits.push(i)
+                }
+              })
+              count++
+              if (count === 4) {
+                resolve(true)
+              }
+            } else {
+              reject(new Error('Query failed'))
+            }
+          })
+        })
+        Promise.all(queryPromises)
+          .then(() => resolve(true))
+          .catch(reject)
+      })
+    },
     updateSupportingVisibility() {
       // turn off all raster layer visibility
       esri.map.layers.items.forEach((fl) => {
@@ -1480,7 +931,6 @@ export default {
       this.supportingMapVisibleLayers.forEach((l) => {
         //if type is raster layer - find the sublayer and make visible
         if (l.type === 'Raster Layer') {
-          // console.log(l);
           let layer = esri.map.layers.items.find((layer) => {
             return (
               layer.type == 'map-image' &&
@@ -1503,11 +953,9 @@ export default {
           )
 
           if (i >= 0) {
-            // console.log('finds feature layer');
             esri.map.layers.items[i].visible = true
           } else {
             //check to see if fl has a popup template defined
-            // console.log('creates feature layer');
             let layerList =
               this.$store.state.config.supportingMapLayers[l.mapServiceIndex].popupTemplate
             let i = layerList.findIndex((layer) => layer.id == l.id)
@@ -1548,159 +996,50 @@ export default {
       })
     },
     consolidateInitLoads() {
-      let consolidated = []
-      console.log(consolidated)
-
+      let loopArray = []
       if (this.layerSelection === 'NRCS Resource Units') {
-        consolidated = this.resourceUnits
-        consolidated.forEach((obj) => {
-          const label = obj.label
-          if (!this.groupedObjects[label]) {
-            this.groupedObjects[label] = {
-              label,
-              nitr: 0,
-              phos: 0,
-              sed: 0,
-              acres: 0,
-              newNitr: 0,
-              newPhos: 0,
-              newSed: 0,
-              nitrReducPercent: 0,
-              phosReducPercent: 0,
-              sedReducPercent: 0,
-              cropRows: [],
-              bmps: [],
-              bmpLength: 0
-            }
-          }
-
-          if (this.groupedObjects[label]) {
-            this.groupedObjects[label]['cropRows'].push(obj)
-            this.groupedObjects[label].nitr += obj.nitr
-            this.groupedObjects[label].phos += obj.phos
-            this.groupedObjects[label].sed += obj.sed
-            this.groupedObjects[label].acres += obj.cAcres
-            this.groupedObjects[label].kFact = obj.k_factor
-            this.groupedObjects[label].clsFactor = obj.cls_factor
-            this.groupedObjects[label].runoff_year = obj.runoff_in_yr
-          }
-        })
-
-        this.initLoadData = Object.values(this.groupedObjects)
-
-        this.initLoadData = this.initLoadData.sort(({ acres: a }, { acres: b }) => b - a)
+        loopArray = Array.from(this.resourceUnits)
       } else if (this.layerSelection === '12-Digit Hydrologic Units') {
-        consolidated = this.hucUnits
-        consolidated.forEach((obj) => {
-          const label = obj.label
-          if (!this.groupedObjects[label]) {
-            this.groupedObjects[label] = {
-              label,
-              nitr: 0,
-              phos: 0,
-              sed: 0,
-              acres: 0,
-              newNitr: 0,
-              newPhos: 0,
-              newSed: 0,
-              nitrReducPercent: 0,
-              phosReducPercent: 0,
-              sedReducPercent: 0,
-              cropRows: [],
-              bmps: []
-            }
-          }
-
-          if (this.groupedObjects[label]) {
-            this.groupedObjects[label]['cropRows'].push(obj)
-            this.groupedObjects[label].nitr += obj.nitr
-            this.groupedObjects[label].phos += obj.phos
-            this.groupedObjects[label].sed += obj.sed
-            this.groupedObjects[label].acres += obj.cAcres
-            this.groupedObjects[label].kFact = obj.k_factor
-            this.groupedObjects[label].clsFactor = obj.cls_factor
-            this.groupedObjects[label].runoff_year = obj.runoff_in_yr
-          }
-        })
-
-        this.initLoadData = Object.values(this.groupedObjects)
-
-        this.initLoadData = this.initLoadData.sort(({ acres: a }, { acres: b }) => b - a)
+        loopArray = Array.from(this.hucUnits)
       } else if (this.layerSelection === 'Catchments') {
-        consolidated = this.catchUnits
-        consolidated.forEach((obj) => {
-          const label = obj.label
-          if (!this.groupedObjects[label]) {
-            this.groupedObjects[label] = {
-              label,
-              nitr: 0,
-              phos: 0,
-              sed: 0,
-              acres: 0,
-              newNitr: 0,
-              newPhos: 0,
-              newSed: 0,
-              nitrReducPercent: 0,
-              phosReducPercent: 0,
-              sedReducPercent: 0,
-              cropRows: [],
-              bmps: []
-            }
-          }
-
-          if (this.groupedObjects[label]) {
-            this.groupedObjects[label]['cropRows'].push(obj)
-            this.groupedObjects[label].nitr += obj.nitr
-            this.groupedObjects[label].phos += obj.phos
-            this.groupedObjects[label].sed += obj.sed
-            this.groupedObjects[label].acres += obj.cAcres
-            this.groupedObjects[label].kFact = obj.k_factor
-            this.groupedObjects[label].clsFactor = obj.cls_factor
-            this.groupedObjects[label].runoff_year = obj.runoff_in_yr
-          }
-        })
-
-        this.initLoadData = Object.values(this.groupedObjects)
-
-        this.initLoadData = this.initLoadData.sort(({ acres: a }, { acres: b }) => b - a)
+        loopArray = Array.from(this.catchUnits)
       } else if (this.layerSelection === 'Field Boundaries') {
-        consolidated = this.fieldUnits
-        consolidated.forEach((obj) => {
-          const label = obj.label
-          if (!this.groupedObjects[label]) {
-            this.groupedObjects[label] = {
-              label,
-              nitr: 0,
-              phos: 0,
-              sed: 0,
-              acres: 0,
-              newNitr: 0,
-              newPhos: 0,
-              newSed: 0,
-              nitrReducPercent: 0,
-              phosReducPercent: 0,
-              sedReducPercent: 0,
-              cropRows: [],
-              bmps: []
-            }
-          }
-
-          if (this.groupedObjects[label]) {
-            this.groupedObjects[label]['cropRows'].push(obj)
-            this.groupedObjects[label].nitr += obj.nitr
-            this.groupedObjects[label].phos += obj.phos
-            this.groupedObjects[label].sed += obj.sed
-            this.groupedObjects[label].acres += obj.cAcres
-            this.groupedObjects[label].kFact = obj.k_factor
-            this.groupedObjects[label].clsFactor = obj.cls_factor
-            this.groupedObjects[label].runoff_year = obj.runoff_in_yr
-          }
-        })
-
-        this.initLoadData = Object.values(this.groupedObjects)
-
-        this.initLoadData = this.initLoadData.sort(({ acres: a }, { acres: b }) => b - a)
+        loopArray = Array.from(this.fieldUnits)
       }
+      let groupedObjects = []
+      loopArray.forEach((obj) => {
+        const label = obj.label
+        if (!groupedObjects[label]) {
+          groupedObjects[label] = {
+            label,
+            nitr: 0,
+            phos: 0,
+            sed: 0,
+            acres: 0,
+            newNitr: 0,
+            newPhos: 0,
+            newSed: 0,
+            nitrReducPercent: 0,
+            phosReducPercent: 0,
+            sedReducPercent: 0,
+            cropRows: [],
+            bmps: [],
+            bmpLength: 0
+          }
+        }
+        if (groupedObjects[label]) {
+          groupedObjects[label]['cropRows'].push(obj)
+          groupedObjects[label].nitr += obj.nitr
+          groupedObjects[label].phos += obj.phos
+          groupedObjects[label].sed += obj.sed
+          groupedObjects[label].acres += obj.cAcres
+          groupedObjects[label].kFact = obj.k_factor
+          groupedObjects[label].clsFactor = obj.cls_factor
+          groupedObjects[label].runoff_year = obj.runoff_in_yr
+        }
+      })
+      this.initLoadData = Object.values(groupedObjects)
+      this.initLoadData = this.initLoadData.sort(({ acres: a }, { acres: b }) => b - a)
     },
     updateSupportingOpacity() {
       let l = this.supportingVisibleLayerOpacity
@@ -1727,11 +1066,9 @@ export default {
         )
 
         if (i >= 0) {
-          // console.log('finds feature layer');
           esri.map.layers.items[i].opacity = l.value
         } else {
           //check to see if fl has a popup template defined
-          // console.log('creates feature layer');
           let layerList =
             this.$store.state.config.supportingMapLayers[l.mapServiceIndex].popupTemplate
           let i = layerList.findIndex((layer) => layer.id == l.id)
