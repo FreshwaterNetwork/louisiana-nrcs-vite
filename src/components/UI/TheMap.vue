@@ -849,6 +849,8 @@ export default {
       this.endLoading = false
       this.resourceUnits = []
       this.hucUnits = []
+      this.catchUnits = []
+      this.fieldUnits = []
       for (let unit of this.units) {
         await this.unitQueries(unit, field)
       }

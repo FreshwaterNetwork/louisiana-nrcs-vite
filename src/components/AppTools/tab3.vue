@@ -1291,7 +1291,7 @@ export default {
       this.highlighted = tempHL
     },
     consolidateData() {
-      const groupedObjects = {}
+      let groupedObjects = []
       this.consolidated = []
       this.$store.commit('updateTotalCropArea', 0)
       let loopArray = []
